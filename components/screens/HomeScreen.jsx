@@ -2,7 +2,7 @@ import { Card, Divider, Layout, Text, Toggle } from '@ui-kitten/components';
 import { Button, Datepicker, CheckBox, Icon } from '@ui-kitten/components';
 import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon, PhoneIcon } from "../icons";
 import { ScrollView, SafeAreaView, View, Linking, StyleSheet } from 'react-native';
-import { Image } from 'react-native';
+import { Image, ImageBackground } from 'react-native';
 import { Row, Col, Grid } from "react-native-easy-grid";
 import { useEffect, useState } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
         margin: 10,
         marginTop: 50,
         marginLeft: 30,
-        marginRight: 30,
+        marginRight: 30
     },
     buttonText: {
         fontSize: "20pt",
@@ -700,13 +700,15 @@ const styles = StyleSheet.create({
     dateCardText: {
         marginTop: "auto",
         marginBottom: "auto",
+
     },
     dateCard: {
         padding: 0,
         backgroundColor: "rgba(255.0, 255.0, 255.0, 0.05)",
         borderRadius: 10,
         margin: 10,
-        marginTop: 2
+        marginTop: 2,
+        backgroundColor:'#FFF',
     },
     toggle: {
         marginTop: "auto",

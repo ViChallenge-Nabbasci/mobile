@@ -31,17 +31,7 @@ export const ProfileScreen = () => {
                 </View>
                 <Text style={styles.name} >Linda Fabbri</Text>
                 <Button accessoryLeft={pinIcon} status='basic' appearance='ghost' style={{ fontStyle: "italic" }}>Via Lovara 36, Vicenza</Button>
-                <Divider style={styles.div} />
-                <View style={styles.container}>
-                    <View style={styles.subContainer}>
-                        <Text style={styles.subText}>Luoghi Visitati</Text>
-                        <Text style={{ fontSize: 18 }}>768</Text>
-                    </View>
-                    <View style={styles.subContainer}>
-                        <Text style={styles.subText}>Eventi Seguiti</Text>
-                        <Text style={{ fontSize: 18 }}>89</Text>
-                    </View>
-                </View>
+                
                 <Divider style={styles.div} />
                 <View>
                     <Card style={styles.dateCard}>
@@ -135,21 +125,23 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         width: "80%",
-
+        color:"#FFF",
         marginLeft: "auto",
-        marginRight: "auto"
+        marginRight: "auto",
     },
     subContainer: {
+        color:'rgba(255.0, 255.0, 255.0, 0.05)',
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        alignSelf: "center"
+        alignSelf: "center",
     },
     subText: {
         fontSize: 20,
-        fontStyle: "italic"
+        fontStyle: "italic",
+        color:'rgba(255.0, 255.0, 255.0, 0.05)'
     },
     outerLayout: {
         height: "100%"

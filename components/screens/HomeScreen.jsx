@@ -2,7 +2,11 @@ import { Card, Layout, Text, Toggle } from '@ui-kitten/components';
 import { Button, Datepicker, CheckBox, Icon } from '@ui-kitten/components';
 import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon } from "../icons";
 
+
 import { ScrollView, SafeAreaView, View,Linking } from 'react-native';
+
+import { Image } from 'react-native';
+
 
 import { Row, Col, Grid } from "react-native-easy-grid";
 
@@ -10,6 +14,7 @@ import { useState } from 'react';
 
 import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 
+import { queryTour } from '../../api/api';
 import MyCarousel from '../c.jsx';
 import { SimpleCarousel, Banner } from 'react-native-simple-banner-carousel';
 import { StatusBar } from 'expo-status-bar';
@@ -31,6 +36,14 @@ export const HomeStackNavigator = () => {
                 }}>
             </Stack.Screen>
             <Stack.Screen name="TourPlanner" component={TourPlanner}
+                options={{
+                    transitionSpec: {
+                        open: config,
+                        close: config,
+                    },
+                }}>
+            </Stack.Screen>
+            <Stack.Screen name="TourScreen" component={TourScreen}
                 options={{
                     transitionSpec: {
                         open: config,
@@ -226,13 +239,47 @@ export const TourPlanner = (props) => {
         churches: false
     });
 
+    const bakeCategories = () => {
+        let categories = []
+
+        if (interestsState.teathers === true) {
+            categories.push("theater");
+        }
+
+        if (interestsState.trekking === true) {
+            categories.push("trekking");
+        }
+
+        if (interestsState.museums === true) {
+            categories.push("museum");
+        }
+
+        if (interestsState.churches === true) {
+            categories.push("church");
+        }
+
+        if (interestsState.parks === true) {
+            categories.push("park");
+        }
+
+        if (interestsState.squares === true) {
+            categories.push("square");
+        }
+
+        return categories;
+    }
+
+    const doRequest = () => {
+        queryTour(byCarState, outForLunchState, outForDinnerState,freePlacesOnlyState, hasDogState, dateState, bakeCategories())
+            .then(resp => console.log(resp.data));
+    }
+
     return (
-        <Layout>
+        <View styles={styles.outerLayout}>
             <ScrollView>
-                <Text
-                    style={styles.input}>
-                    Cosa vuoi fare?
-                </Text>
+            <Text style={styles.input}>
+                Cosa vuoi fare?
+            </Text>
                 <Card style={styles.dateCard}>
                     <Grid style={{ flex: 0, height: 50 }}>
                         <Row>
@@ -373,6 +420,7 @@ export const TourPlanner = (props) => {
                                 <Button style={styles.endButton}
                                     size="large"
                                     status="success"
+                                    onPress={() => doRequest()}
                                     accessoryRight={CheckmarkIcon}>
                                     Conferma
                                 </Button>
@@ -381,19 +429,92 @@ export const TourPlanner = (props) => {
                     </Grid>
                 </Layout>
             </ScrollView>
-
-        </Layout>
+        </View>
     );
 }
 
-const styles = {
+const TourScreen = (props) => {
+    let dummy = {
+        "id": 0,
+        "name": "Villaggio Preistorico del Monte Corgnon",
+        "opening_times": [
+            "00:10:00",
+            "00:10:00",
+            "00:10:00",
+            "00:10:00",
+            "00:10:00",
+            "00:10:00",
+            "00:10:00"
+        ],
+        "closing_times": [
+            "00:19:00",
+            "00:19:00",
+            "00:19:00",
+            "00:19:00",
+            "00:19:00",
+            "00:19:00",
+            "00:19:00"
+        ],
+        "phone": "0424407264",
+        "price": 4,
+        "durata": 1,
+        "address": "",
+        "notes": "",
+        "category": "museum",
+        "outside": true,
+        "with_pets": true
+    };
+
+    let paramsList = [...Array(50).keys()].map(_ => dummy);
+
+    return (
+        <>
+            <Text style={styles.input}>Il tuo itinerario</Text>
+            <ScrollView>
+                {paramsList.map(item =>
+                (
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 150 }}>
+                        <Row>
+                            <Col size={40}>
+                                <Image
+                                    style={styles.tinyLogo}
+                                    source={{
+                                        uri: 'https://reactnative.dev/img/tiny_logo.png',
+                                    }}
+                                />
+                            </Col>
+                            <Col size={60}>
+                                <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text></Row>
+                                <Row size={20}><Text style={styles.tourCardText}>{item.opening_times[0]} - {item.closing_times[0]} ({item.durata} ora)</Text></Row>
+                                <Row size={20}><Text style={styles.tourCardText}>{item.category}</Text></Row>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </Card>
+                ))
+                }
+            </ScrollView>
+        </>
+    )
+}
+
+const styles = StyleSheet.create({
     layout: {
         flex: 1
+    },
+    tinyLogo: {
+        width: 100,
+        height: 100,
+        marginTop: "auto",
+        marginBottom: "auto",
     },
     searchButton: {
         borderRadius: 100,
         margin: 10,
-        marginTop: 50
+        marginTop: 50,
+        marginLeft: 30,
+        marginRight: 30,
     },
     buttonText: {
         fontSize: "20pt",
@@ -458,6 +579,18 @@ const styles = {
         right:50,
         borderRadius:50,
         margin:10
+    },
+    tourCardText: {
+        marginRight: "auto",
+        fontSize: 12
+    },
+    tourCardTextTitle: {
+        fontSize: 15,
+        marginTop: "auto",
+        marginBottom: "auto",
+    },
+    outerLayout: {
+        height: "100%"
     }
-};
+});
 

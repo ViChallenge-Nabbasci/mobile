@@ -4,6 +4,9 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { AppNavigator } from "./components/router"
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs(true);
 
 export default () => (
     <>

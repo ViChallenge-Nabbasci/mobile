@@ -514,13 +514,16 @@ const TourScreen = (props) => {
         morning: [],
         lunch: [],
         afternoon: [],
+        afternoon2: [],
         dinner: [],
         night: [],
     });
 
     useEffect(() => {
         AsyncStorage.getItem("usertour").then(item => {
-            setItems(JSON.parse(item));
+            let localItems = JSON.parse(item);
+            let afternoon2 = tail(localItems.afternoon).filter(i => i.durata >= 1 && i.durata <= 2);
+            setItems(s => s = {...localItems, afternoon2: afternoon2});
         })
     }, []);
 
@@ -529,18 +532,9 @@ const TourScreen = (props) => {
         props.navigation.navigate("PlaceScreen");
     }
 
-    const save = () => {
-        AsyncStorage.getItem("savedTours").then(async (value) => {
-            let toursItems = JSON.parse(value);
-            toursItems.push(items);
-            await AsyncStorage.setItem("savedTours", JSON.stringify(toursItems));
-        })
-    }
-
     return (
         <>
             <Text style={styles.input}>Il tuo itinerario</Text>
-            <Button onPress={save} style={{...styles.buttonLocation, marginBottom: 20 }} size="giant" accessoryLeft={SaveIcon}>Salva itinerario</Button>
             <ScrollView>
                 { items.morning.length > 0 ? <Text style={styles.tourHeader}>10:00</Text> : null}
                 { items.morning.length > 0 ? [items.morning[0]].map(item =>
@@ -632,8 +626,39 @@ const TourScreen = (props) => {
                                 </Col>
                             </Row>
                         </Grid>
-                    </Card>
-                ))
+                    </Card>)
+                )
+                 : null}
+                { items.afternoon2.length > 0 ? <Text style={styles.tourHeader}>17:00</Text> : null}
+                { items.afternoon2.length > 0 ? [items.afternoon2[0]].map(item =>
+                (
+                    <Card style={styles.dateCard} onPress={() => onClickItem(item)}>
+                        <Grid style={{ flex: 0, height: 150 }}>
+                            <Row>
+                                <Col size={40}>
+                                    <Image
+                                        style={styles.tinyLogo}
+                                        source={{
+                                            uri: item.img,
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={60}>
+                                    <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}}
+                                            onPress={() => {
+                                                setItems({ ...items, afternoon2: tail(items.afternoon2) })
+                                            }}
+                                            status="danger" accessoryLeft={CloseIcon}></Button>
+                                    </Row>
+                                    <Row size={20}>
+                                        <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Card>)
+                )
                  : null}
                 { items.dinner.length > 0 ? <Text style={styles.tourHeader}>19:00</Text> : null}
                 { items.dinner.length > 0 ? [items.dinner[0]].map(item =>

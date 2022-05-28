@@ -12,10 +12,14 @@ const pinIcon=(props)=>(
 
 export const ProfileScreen = () => {
   const [checked, setChecked] = React.useState(false);
+  const [bru,setBru]= React.useState(false);
 
   const onCheckedChange = (isChecked) => {
     setChecked(isChecked);
   };
+  const onBruChanged= (isChecked)=>{
+    setBru(isChecked);
+  }
   return(
     <React.Fragment>
 
@@ -59,7 +63,7 @@ export const ProfileScreen = () => {
                             <Text style={styles.dateCardText}>Notifiche</Text>
                         </Col>
                         <Col>
-                        <Toggle style={styles.toggle} checked={checked} onChange={onCheckedChange}></Toggle>
+                        <Toggle style={styles.toggle} checked={bru} onChange={onBruChanged}></Toggle>
                         </Col>
                     </Row>
                 </Grid>

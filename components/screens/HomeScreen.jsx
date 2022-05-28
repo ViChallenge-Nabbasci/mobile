@@ -3,6 +3,7 @@ import { Button, Datepicker, CheckBox } from '@ui-kitten/components';
 import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon } from "../icons";
 
 import { View, ScrollView, Image } from 'react-native';
+import { ScrollView, SafeAreaView, View } from 'react-native';
 
 import { Row, Col, Grid } from "react-native-easy-grid";
 
@@ -11,6 +12,9 @@ import { useState } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 
 import { queryTour } from '../../api/api';
+import MyCarousel from '../c.jsx';
+import { SimpleCarousel, Banner } from 'react-native-simple-banner-carousel';
+import { StatusBar } from 'expo-status-bar';
 
 const Stack = createStackNavigator();
 
@@ -67,17 +71,123 @@ export const HomeScreen = (props) => {
     }
 
     return (
-        <Layout style={styles.layout}>
-                <Button style={styles.searchButton}
-                    accessoryLeft={SearchIcon}
-                    size="giant"
-                    onPress={openTourPlanner}
-                >
-                    <Text style={styles.buttonText}>
-                        Cerca itinerario
-                    </Text>
-                </Button>
-        </Layout>
+        <ScrollView>
+            <SafeAreaView>
+                <Layout style={styles.layout}>
+                        <Button style={styles.searchButton}
+                            accessoryLeft={SearchIcon}
+                            size="giant"
+                            onPress={openTourPlanner}
+                            >
+                            <Text style={styles.buttonText}>
+                                Cerca itinerario
+                            </Text>
+                        </Button>
+                </Layout>
+                
+                <View style={styles.container}>
+                    <Text category='h6' style={styles.carouselHeader}>Attività all'Aperto</Text>
+                    <View style={{
+                        paddingVertical: 12,
+                        width: '100%',
+                        backgroundColor: '#fff',
+                    }}>
+                    <SimpleCarousel style={{height:500}}
+                    data={[{
+                        title: 'Giardino Salvi',
+                        source: require('../../assets/giardinoSalvi.jpg'),
+                        },
+                        {
+                        title: 'Contrà Mure Porta Nova',
+                        source: require('../../assets/portaNuova.jpg'),
+                        },
+                        {
+                        title: 'Santuario di Santa Corona',
+                        source: require('../../assets/santaCorona.jpg'),
+                        }
+                    ]} 
+                    renderItem={(props, i, width) => {
+                        return (
+                            <>
+                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
+                                <Text style={styles.textBanner}>{props.title}</Text>
+                            </>
+                        )
+                    }} 
+                    />
+                </View>
+                <StatusBar translucent={true} />
+                </View>
+
+                <View style={styles.container}>
+                    <Text category='h6' style={styles.carouselHeader}>Musei per te</Text>
+                    <View style={{
+                        paddingVertical: 12,
+                        width: '100%',
+                        backgroundColor: '#fff',
+                    }}>
+                    <SimpleCarousel style={{height:500}}
+                    data={[{
+                        title: 'Villa la Rotonda',
+                        source: require('../../assets/villaRondo.jpg'),
+                        },
+                        {
+                        title: 'Basilica Palladiana',
+                        source: require('../../assets/basilicaPalladiana.jpg'),
+                        },
+                        {
+                        title: 'Castello Inferiore a Marostica',
+                        source: require('../../assets/castelloMarostica.jpg'),
+                        }
+                    ]} 
+                    renderItem={(props, i, width) => {
+                        return (
+                            <>
+                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
+                                <Text style={styles.textBanner}>{props.title}</Text>
+                            </>
+                        )
+                    }} 
+                    />
+                </View>
+                <StatusBar translucent={true} />
+                </View>
+
+                <View style={styles.container}>
+                    <Text category='h6' style={styles.carouselHeader}>Ristoranti in base ai tuoi gusti</Text>
+                    <View style={{
+                        paddingVertical: 12,
+                        width: '100%',
+                        backgroundColor: '#fff',
+                    }}>
+                    <SimpleCarousel style={{height:500}}
+                    data={[{
+                        title: 'Ristorante Da Biasio',
+                        source: require('../../assets/ristoranteBlasio.jpg'),
+                        },
+                        {
+                        title: 'Ristorante "Il Ceppo"',
+                        source: require('../../assets/ristoCeppo.jpg'),
+                        },
+                        {
+                        title: 'al Pastello',
+                        source: require('../../assets/ristoPastello.jpg'),
+                        }
+                    ]} 
+                    renderItem={(props, i, width) => {
+                        return (
+                            <>
+                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
+                                <Text style={styles.textBanner}>{props.title}</Text>
+                            </>
+                        )
+                    }} 
+                    />
+                </View>
+                <StatusBar translucent={true} />
+                </View>
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 
@@ -418,3 +528,4 @@ const styles = {
         height: "100%"
     }
 };
+

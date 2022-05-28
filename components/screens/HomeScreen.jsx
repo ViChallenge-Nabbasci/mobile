@@ -1,6 +1,6 @@
 import { Card, Divider, Layout, Text, Toggle } from '@ui-kitten/components';
 import { Button, Datepicker, CheckBox, Icon } from '@ui-kitten/components';
-import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon, PhoneIcon } from "../icons";
+import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon, PhoneIcon, CloseIcon, SaveIcon } from "../icons";
 import { ScrollView, SafeAreaView, View, Linking, StyleSheet } from 'react-native';
 import { Image, ImageBackground } from 'react-native';
 import { Row, Col, Grid } from "react-native-easy-grid";
@@ -11,6 +11,7 @@ import { SimpleCarousel, Banner } from 'react-native-simple-banner-carousel';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const tail = ([a, ...b]) => b;
 
 const Stack = createStackNavigator();
 
@@ -81,6 +82,10 @@ export const HomeScreen = (props) => {
         props.navigation.navigate("TourPlanner");
         props.navigation.pop
     }
+
+    useEffect(() => {
+        AsyncStorage.setItem("savedTours", JSON.stringify([]));
+    });
 
     return (
         <Layout style={styles.outerLayout}>
@@ -473,7 +478,8 @@ const PlaceScreen = (props) => {
                     style={styles.bigLogo}
                     source={{
                         uri: item.img,
-                    }}/>
+                    }}>
+                    </Image>
                 <Divider></Divider>
                 <Card style={styles.timeCard}>
                     <Text style={{ marginLeft:"auto", marginRight:"auto", fontSize: 25, marginBottom: 5}}>
@@ -496,6 +502,7 @@ const PlaceScreen = (props) => {
                 >
                     Scopri Posizione
                 </Button>
+                <Button style={styles.buttonLocation } status="danger" size="giant" accessoryLeft={heartIcon}>Mi Piace</Button>
             </>
             : null}
         </>
@@ -522,9 +529,18 @@ const TourScreen = (props) => {
         props.navigation.navigate("PlaceScreen");
     }
 
+    const save = () => {
+        AsyncStorage.getItem("savedTours").then(async (value) => {
+            let toursItems = JSON.parse(value);
+            toursItems.push(items);
+            await AsyncStorage.setItem("savedTours", JSON.stringify(toursItems));
+        })
+    }
+
     return (
         <>
             <Text style={styles.input}>Il tuo itinerario</Text>
+            <Button onPress={save} style={{...styles.buttonLocation, marginBottom: 20 }} size="giant" accessoryLeft={SaveIcon}>Salva itinerario</Button>
             <ScrollView>
                 { items.morning.length > 0 ? <Text style={styles.tourHeader}>10:00</Text> : null}
                 { items.morning.length > 0 ? [items.morning[0]].map(item =>
@@ -542,7 +558,11 @@ const TourScreen = (props) => {
                                 </Col>
                                 <Col size={60}>
                                     <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
-                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}}
+                                            onPress={() => {
+                                                setItems({ ...items, morning: tail(items.morning) })
+                                            }}
+                                            status="danger" accessoryLeft={CloseIcon}></Button>
                                     </Row>
                                     <Row size={20}>
                                         <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
@@ -569,7 +589,11 @@ const TourScreen = (props) => {
                                 </Col>
                                 <Col size={60}>
                                     <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
-                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}}
+                                            onPress={() => {
+                                                setItems({ ...items, lunch: tail(items.lunch) })
+                                            }}
+                                            status="danger" accessoryLeft={CloseIcon}></Button>
                                     </Row>
                                     <Row size={20}>
                                         <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
@@ -596,7 +620,11 @@ const TourScreen = (props) => {
                                 </Col>
                                 <Col size={60}>
                                     <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
-                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}}
+                                            onPress={() => {
+                                                setItems({ ...items, afternoon: tail(items.afternoon) })
+                                            }}
+                                            status="danger" accessoryLeft={CloseIcon}></Button>
                                     </Row>
                                     <Row size={20}>
                                         <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
@@ -623,7 +651,11 @@ const TourScreen = (props) => {
                                 </Col>
                                 <Col size={60}>
                                     <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
-                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}}
+                                            onPress={() => {
+                                                setItems({ ...items, dinner: tail(items.dinner) })
+                                            }}
+                                            status="danger" accessoryLeft={CloseIcon}></Button>
                                     </Row>
                                     <Row size={20}>
                                         <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
@@ -650,7 +682,11 @@ const TourScreen = (props) => {
                                 </Col>
                                 <Col size={60}>
                                     <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
-                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}}
+                                            onPress={() => {
+                                                setItems({ ...items, night: tail(items.night) })
+                                            }}
+                                            status="danger" accessoryLeft={CloseIcon}></Button>
                                     </Row>
                                     <Row size={20}>
                                         <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
@@ -716,6 +752,7 @@ const styles = StyleSheet.create({
     },
     endButton: {
         margin: 10,
+        borderRadius: 100
     },
     container: {
         marginTop: "0%",

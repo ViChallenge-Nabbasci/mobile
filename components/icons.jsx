@@ -35,3 +35,11 @@ export const CheckmarkIcon = (props) => (
 export const PhoneIcon = (props) => (
     <Icon {...props} name='phone-outline' />
 )
+
+export const CloseIcon = (props) => (
+    <Icon {...props} name='close-outline' />
+)
+
+export const SaveIcon = (props) => (
+    <Icon {...props} name='save-outline' />
+)

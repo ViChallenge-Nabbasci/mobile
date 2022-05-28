@@ -9,7 +9,7 @@ import { ProfileScreen } from './screens/ProfileScreen';
 const { Navigator, Screen } = createBottomTabNavigator();
 
 import {
-    HomeIcon, ProfileIcon
+    HomeIcon, ProfileIcon, SaveIcon
 } from "./icons";
 
 const BottomTabBar = ({ navigation, state }) => (

@@ -2,7 +2,7 @@ import { Card, Layout, Text, Toggle } from '@ui-kitten/components';
 import { Button, Datepicker, CheckBox } from '@ui-kitten/components';
 import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon } from "../icons";
 
-import { View, Image } from 'react-native';
+import { Image } from 'react-native';
 import { ScrollView, SafeAreaView, View } from 'react-native';
 
 import { Row, Col, Grid } from "react-native-easy-grid";

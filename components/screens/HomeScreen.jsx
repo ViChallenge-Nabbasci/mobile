@@ -71,6 +71,8 @@ export const HomeScreen = (props) => {
     }
 
     return (
+        <Layout style={styles.outerLayout}>
+
         <ScrollView>
             <SafeAreaView>
                 <Layout style={styles.layout}>
@@ -109,8 +111,10 @@ export const HomeScreen = (props) => {
                     renderItem={(props, i, width) => {
                         return (
                             <>
-                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <Text style={styles.textBanner}>{props.title}</Text>
+                                <Card>
+                                    <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
+                                    <Text style={styles.textBanner}>{props.title}</Text>
+                                </Card>
                             </>
                         )
                     }} 
@@ -188,6 +192,7 @@ export const HomeScreen = (props) => {
                 </View>
             </SafeAreaView>
         </ScrollView>
+        </Layout>
     )
 }
 
@@ -526,6 +531,12 @@ const styles = {
     },
     outerLayout: {
         height: "100%"
+    },
+    carouselHeader: {
+        margin: 10,
+        backgroundColor: "white",
+        marginLeft: "auto",
+        marginRight:"auto"
     }
 };
 

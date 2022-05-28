@@ -1,32 +1,25 @@
-import { Card, Layout, Text, Toggle } from '@ui-kitten/components';
+import { Card, Divider, Layout, Text, Toggle } from '@ui-kitten/components';
 import { Button, Datepicker, CheckBox, Icon } from '@ui-kitten/components';
-import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon } from "../icons";
-
-
-import { ScrollView, SafeAreaView, View,Linking } from 'react-native';
-
+import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon, PhoneIcon } from "../icons";
+import { ScrollView, SafeAreaView, View, Linking, StyleSheet } from 'react-native';
 import { Image } from 'react-native';
-
-
 import { Row, Col, Grid } from "react-native-easy-grid";
-
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
-
 import { queryTour } from '../../api/api';
-import MyCarousel from '../c.jsx';
 import { SimpleCarousel, Banner } from 'react-native-simple-banner-carousel';
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Stack = createStackNavigator();
 
 export const HomeStackNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{
-                headerShown: false,
-                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-            }}>
+            headerShown: false,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}>
             <Stack.Screen name="HomeScreen" component={HomeScreen}
                 options={{
                     transitionSpec: {
@@ -51,6 +44,14 @@ export const HomeStackNavigator = () => {
                     },
                 }}>
             </Stack.Screen>
+            <Stack.Screen name="PlaceScreen" component={PlaceScreen}
+                options={{
+                    transitionSpec: {
+                        open: config,
+                        close: config,
+                    },
+                }}>
+            </Stack.Screen>
         </Stack.Navigator>
     )
 }
@@ -67,11 +68,11 @@ const config = {
     },
 };
 
-const pinIcon=(props)=>(
+const pinIcon = (props) => (
     <Icon name="pin-outline" {...props} />
-  )
-const heartIcon=(props)=>(
-<Icon name="heart-outline" {...props} />
+)
+const heartIcon = (props) => (
+    <Icon name="heart-outline" {...props} />
 )
 
 
@@ -83,152 +84,149 @@ export const HomeScreen = (props) => {
 
     return (
         <Layout style={styles.outerLayout}>
-
-        <ScrollView>
-            <SafeAreaView>
-                <Layout style={styles.layout}>
+            <Grid>
+                <Row size={15}>
+                    <Layout style={styles.layout}>
                         <Button style={styles.searchButton}
                             accessoryLeft={SearchIcon}
                             size="giant"
                             onPress={openTourPlanner}
-                            >
+                        >
                             <Text style={styles.buttonText}>
                                 Cerca itinerario
                             </Text>
                         </Button>
-                </Layout>
-                
-                <View style={styles.container}>
-                    <Text category='h6' style={styles.carouselHeader}>Attività all'Aperto</Text>
-                    <View style={{
-                        paddingVertical: 12,
-                        width: '100%',
-                        backgroundColor: '#fff',
-                    }}>
-                    <SimpleCarousel style={{height:500}}
-                    data={[{
-                        title: 'Giardino Salvi',
-                        source: require('../../assets/giardinoSalvi.jpg'),
-                        map:"https://goo.gl/maps/dPty1noXK4hpU7iE8"
-                        },
-                        {
-                        title: 'Contrà Mure Porta Nova',
-                        source: require('../../assets/portaNuova.jpg'),
-                        map:"https://goo.gl/maps/8MjqDw8FuWQahk1B9"
-                        },
-                        {
-                        title: 'Santuario di Santa Corona',
-                        source: require('../../assets/santaCorona.jpg'),
-                        map:"https://goo.gl/maps/4iGdcnPNgepZWm1U9"
-                        }
-                    ]} 
-                    renderItem={(props, i, width) => {
-                        return (
-                            <>
-<<<<<<< HEAD
-                                <Card>
-                                    <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                    <Text style={styles.textBanner}>{props.title}</Text>
-                                </Card>
-=======
-                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <View>
-                                    <Text style={styles.textBanner}>{props.title}</Text>
-                                    <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={()=>{Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err))}}></Button>
-                                    <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                    </Layout>
+                </Row>
+                <Row size={85}>
+                    <ScrollView>
+                        <SafeAreaView>
+                            <View style={styles.container}>
+                                <Text category='h6' style={styles.carouselHeader}>Attività all'Aperto</Text>
+                                <View style={{
+                                    paddingVertical: 12,
+                                    width: '100%',
+                                    backgroundColor: '#fff',
+                                }}>
+                                    <SimpleCarousel style={{ height: 500 }}
+                                        data={[{
+                                            title: 'Giardino Salvi',
+                                            source: require('../../assets/giardinoSalvi.jpg'),
+                                            map: "https://goo.gl/maps/dPty1noXK4hpU7iE8"
+                                        },
+                                        {
+                                            title: 'Contrà Mure Porta Nova',
+                                            source: require('../../assets/portaNuova.jpg'),
+                                            map: "https://goo.gl/maps/8MjqDw8FuWQahk1B9"
+                                        },
+                                        {
+                                            title: 'Santuario di Santa Corona',
+                                            source: require('../../assets/santaCorona.jpg'),
+                                            map: "https://goo.gl/maps/4iGdcnPNgepZWm1U9"
+                                        }
+                                        ]}
+                                        renderItem={(props, i, width) => {
+                                            return (
+                                                <>
+                                                    <Banner id={`${props.title}_${i}`} source={props.source} width={width} onPress={(id) => null} />
+                                                    <View>
+                                                        <Text style={styles.textBanner}>{props.title}</Text>
+                                                        <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={() => { Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err)) }}></Button>
+                                                        <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                                                    </View>
+                                                </>
+                                            )
+                                        }}
+                                    />
                                 </View>
->>>>>>> b11df1b5e2830c61ed2d2827b442638cc32de2c3
-                            </>
-                        )
-                    }} 
-                    />
-                </View>
-                <StatusBar translucent={true} />
-                </View>
+                                <StatusBar translucent={true} />
+                            </View>
 
-                <View style={styles.container}>
-                    <Text category='h6' style={styles.carouselHeader}>Musei per te</Text>
-                    <View style={{
-                        paddingVertical: 12,
-                        width: '100%',
-                        backgroundColor: '#fff',
-                    }}>
-                    <SimpleCarousel style={{height:500}}
-                    data={[{
-                        title: 'Villa la Rotonda',
-                        source: require('../../assets/villaRondo.jpg'),
-                        map:"https://g.page/villa-la-rotonda-vicenza?share"
-                        },
-                        {
-                        title: 'Basilica Palladiana',
-                        source: require('../../assets/basilicaPalladiana.jpg'),
-                        map:"https://goo.gl/maps/Cduzd2eVEDGXFz9y9"
-                        },
-                        {
-                        title: 'Castello Inferiore a Marostica',
-                        source: require('../../assets/castelloMarostica.jpg'),
-                        map:"https://goo.gl/maps/NGYjkbNMmhCLCBAe9"
-                        }
-                    ]} 
-                    renderItem={(props, i, width) => {
-                        return (
-                            <>
-                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <View>
-                                    <Text style={styles.textBanner}>{props.title}</Text>
-                                    <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={()=>{Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err))}}></Button>
-                                    <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                            <View style={styles.container}>
+                                <Text category='h6' style={styles.carouselHeader}>Musei per te</Text>
+                                <View style={{
+                                    paddingVertical: 12,
+                                    width: '100%',
+                                    backgroundColor: '#fff',
+                                }}>
+                                    <SimpleCarousel style={{ height: 500 }}
+                                        data={[{
+                                            title: 'Villa la Rotonda',
+                                            source: require('../../assets/villaRondo.jpg'),
+                                            map: "https://g.page/villa-la-rotonda-vicenza?share"
+                                        },
+                                        {
+                                            title: 'Basilica Palladiana',
+                                            source: require('../../assets/basilicaPalladiana.jpg'),
+                                            map: "https://goo.gl/maps/Cduzd2eVEDGXFz9y9"
+                                        },
+                                        {
+                                            title: 'Castello Inferiore a Marostica',
+                                            source: require('../../assets/castelloMarostica.jpg'),
+                                            map: "https://goo.gl/maps/NGYjkbNMmhCLCBAe9"
+                                        }
+                                        ]}
+                                        renderItem={(props, i, width) => {
+                                            return (
+                                                <>
+                                                    <Banner id={`${props.title}_${i}`} source={props.source} width={width} onPress={(id) => null} />
+                                                    <View>
+                                                        <Text style={styles.textBanner}>{props.title}</Text>
+                                                        <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={() => { Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err)) }}></Button>
+                                                        <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                                                    </View>
+                                                </>
+                                            )
+                                        }}
+                                    />
                                 </View>
-                            </>
-                        )
-                    }} 
-                    />
-                </View>
-                <StatusBar translucent={true} />
-                </View>
+                                <StatusBar translucent={true} />
+                            </View>
 
-                <View style={styles.container}>
-                    <Text category='h6' style={styles.carouselHeader}>Ristoranti in base ai tuoi gusti</Text>
-                    <View style={{
-                        paddingVertical: 12,
-                        width: '100%',
-                        backgroundColor: '#fff',
-                    }}>
-                    <SimpleCarousel style={{height:500}}
-                    data={[{
-                        title: 'Ristorante Da Biasio',
-                        source: require('../../assets/ristoranteBlasio.jpg'),
-                        map: "https://www.google.com/maps/place/Ristorante+Da+Biasio/@45.5197587,11.5465239,15z/data=!4m5!3m4!1s0x0:0xb2e00ce5025588c5!8m2!3d45.5197572!4d11.5465343"
-                        },
-                        {
-                        title: 'Ristorante "Il Ceppo"',
-                        source: require('../../assets/ristoCeppo.jpg'),
-                        map: "https://goo.gl/maps/SjW2SNKzNBqBAa5d8"
-                        },
-                        {
-                        title: 'al Pastello',
-                        source: require('../../assets/ristoPastello.jpg'),
-                        map: "https://g.page/alpestello?share"
-                        }
-                    ]} 
-                    renderItem={(props, i, width) => {
-                        return (
-                            <>
-                                <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <View>
-                                    <Text style={styles.textBanner}>{props.title}</Text>
-                                    <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={()=>{Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err))}}></Button>
-                                    <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                            <View style={styles.container}>
+                                <Text category='h6' style={styles.carouselHeader}>Ristoranti in base ai tuoi gusti</Text>
+                                <View style={{
+                                    paddingVertical: 12,
+                                    width: '100%',
+                                    backgroundColor: '#fff',
+                                }}>
+                                    <SimpleCarousel style={{ height: 500 }}
+                                        data={[{
+                                            title: 'Ristorante Da Biasio',
+                                            source: require('../../assets/ristoranteBlasio.jpg'),
+                                            map: "https://www.google.com/maps/place/Ristorante+Da+Biasio/@45.5197587,11.5465239,15z/data=!4m5!3m4!1s0x0:0xb2e00ce5025588c5!8m2!3d45.5197572!4d11.5465343"
+                                        },
+                                        {
+                                            title: 'Ristorante "Il Ceppo"',
+                                            source: require('../../assets/ristoCeppo.jpg'),
+                                            map: "https://goo.gl/maps/SjW2SNKzNBqBAa5d8"
+                                        },
+                                        {
+                                            title: 'al Pastello',
+                                            source: require('../../assets/ristoPastello.jpg'),
+                                            map: "https://g.page/alpestello?share"
+                                        }
+                                        ]}
+                                        renderItem={(props, i, width) => {
+                                            return (
+                                                <>
+                                                    <Banner id={`${props.title}_${i}`} source={props.source} width={width} onPress={(id) => null} />
+                                                    <View>
+                                                        <Text style={styles.textBanner}>{props.title}</Text>
+                                                        <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={() => { Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err)) }}></Button>
+                                                        <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                                                    </View>
+                                                </>
+                                            )
+                                        }}
+                                    />
                                 </View>
-                            </>
-                        )
-                    }} 
-                    />
-                </View>
-                <StatusBar translucent={true} />
-                </View>
-            </SafeAreaView>
-        </ScrollView>
+                                <StatusBar translucent={true} />
+                            </View>
+                        </SafeAreaView>
+                    </ScrollView>
+                </Row>
+            </Grid>
         </Layout>
     )
 }
@@ -279,17 +277,23 @@ export const TourPlanner = (props) => {
         return categories;
     }
 
-    const doRequest = () => {
-        queryTour(byCarState, outForLunchState, outForDinnerState,freePlacesOnlyState, hasDogState, dateState, bakeCategories())
-            .then(resp => console.log(resp.data));
+    const doRequest = async () => {
+        queryTour(byCarState, outForLunchState, outForDinnerState, freePlacesOnlyState, hasDogState, dateState, bakeCategories())
+            .then(async data => {
+                await AsyncStorage.setItem("usertour", JSON.stringify(data.data));
+                let item = await AsyncStorage.getItem("usertour");
+                console.log("Item", item);
+                props.navigation.navigate("TourScreen");
+            });
+
     }
 
     return (
         <View styles={styles.outerLayout}>
             <ScrollView>
-            <Text style={styles.input}>
-                Cosa vuoi fare?
-            </Text>
+                <Text style={styles.input}>
+                    Cosa vuoi fare?
+                </Text>
                 <Card style={styles.dateCard}>
                     <Grid style={{ flex: 0, height: 50 }}>
                         <Row>
@@ -443,67 +447,220 @@ export const TourPlanner = (props) => {
     );
 }
 
-const TourScreen = (props) => {
-    let dummy = {
-        "id": 0,
-        "name": "Villaggio Preistorico del Monte Corgnon",
-        "opening_times": [
-            "00:10:00",
-            "00:10:00",
-            "00:10:00",
-            "00:10:00",
-            "00:10:00",
-            "00:10:00",
-            "00:10:00"
-        ],
-        "closing_times": [
-            "00:19:00",
-            "00:19:00",
-            "00:19:00",
-            "00:19:00",
-            "00:19:00",
-            "00:19:00",
-            "00:19:00"
-        ],
-        "phone": "0424407264",
-        "price": 4,
-        "durata": 1,
-        "address": "",
-        "notes": "",
-        "category": "museum",
-        "outside": true,
-        "with_pets": true
-    };
+const PlaceScreen = (props) => {
+    const [item, setItem] = useState(null);
 
-    let paramsList = [...Array(50).keys()].map(_ => dummy);
+    useEffect(() => {
+        AsyncStorage.getItem("pressedItem").then(value => {
+            let temp = JSON.parse(value);
+            console.log("closing time", temp.closing_times);
+            setItem(temp);
+        });
+    }, []);
+
+    const doPhoneCall = () => {
+        Linking.openURL(`tel:${item.phone}`);
+    }
+
+    return (
+        <>
+            {item !== null ?
+            <>
+                <Text style={styles.input}>
+                    {item.name}
+                </Text>
+                <Image
+                    style={styles.bigLogo}
+                    source={{
+                        uri: item.img,
+                    }}/>
+                <Divider></Divider>
+                <Card style={styles.timeCard}>
+                    <Text style={{ marginLeft:"auto", marginRight:"auto", fontSize: 25, marginBottom: 5}}>
+                        Orari
+                    </Text>
+                    { item.opening_times.map((time, i) => {
+                        let component = <Text style={styles.infoTime}>{time} - {item.closing_times[i]}</Text>;
+                        if (time === "00:00:00") {
+                            return <Text style={styles.infoTime}>Chiuso</Text>
+                        } else return component;
+                    })} 
+                </Card>
+                { item.phone !== "" ?
+                    <Button onPress={doPhoneCall} style={styles.callButton} accessoryLeft={PhoneIcon} status="success" size="giant">Chiama</Button>
+                : null}
+                <Button style={styles.buttonLocation}
+                    accessoryLeft={pinIcon}
+                    onPress={() => { Linking.openURL(item.location).catch(err => console.error("Couldn't load page", err)) }}
+                    size="giant"
+                >
+                    Scopri Posizione
+                </Button>
+            </>
+            : null}
+        </>
+    );
+}
+
+const TourScreen = (props) => {
+    const [items, setItems] = useState({
+        morning: [],
+        lunch: [],
+        afternoon: [],
+        dinner: [],
+        night: [],
+    });
+
+    useEffect(() => {
+        AsyncStorage.getItem("usertour").then(item => {
+            setItems(JSON.parse(item));
+        })
+    }, []);
+
+    const onClickItem = async (item) => {
+        await AsyncStorage.setItem("pressedItem", JSON.stringify(item));
+        props.navigation.navigate("PlaceScreen");
+    }
 
     return (
         <>
             <Text style={styles.input}>Il tuo itinerario</Text>
             <ScrollView>
-                {paramsList.map(item =>
+                { items.morning.length > 0 ? <Text style={styles.tourHeader}>10:00</Text> : null}
+                { items.morning.length > 0 ? [items.morning[0]].map(item =>
                 (
-                <Card style={styles.dateCard}>
-                    <Grid style={{ flex: 0, height: 150 }}>
-                        <Row>
-                            <Col size={40}>
-                                <Image
-                                    style={styles.tinyLogo}
-                                    source={{
-                                        uri: 'https://reactnative.dev/img/tiny_logo.png',
-                                    }}
-                                />
-                            </Col>
-                            <Col size={60}>
-                                <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text></Row>
-                                <Row size={20}><Text style={styles.tourCardText}>{item.opening_times[0]} - {item.closing_times[0]} ({item.durata} ora)</Text></Row>
-                                <Row size={20}><Text style={styles.tourCardText}>{item.category}</Text></Row>
-                            </Col>
-                        </Row>
-                    </Grid>
-                </Card>
+                    <Card style={styles.dateCard} onPress={() => onClickItem(item)}>
+                        <Grid style={{ flex: 0, height: 150 }}>
+                            <Row>
+                                <Col size={40}>
+                                    <Image
+                                        style={styles.tinyLogo}
+                                        source={{
+                                            uri: item.img,
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={60}>
+                                    <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                    </Row>
+                                    <Row size={20}>
+                                        <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Card>
                 ))
-                }
+                : null}
+                { items.lunch.length > 0 ? <Text style={styles.tourHeader}>12:00</Text> : null}
+                { items.lunch.length > 0 ? [items.lunch[0]].map(item =>
+                (
+                    <Card style={styles.dateCard} onPress={() => onClickItem(item)}>
+                        <Grid style={{ flex: 0, height: 150 }}>
+                            <Row>
+                                <Col size={40}>
+                                    <Image
+                                        style={styles.tinyLogo}
+                                        source={{
+                                            uri: item.img,
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={60}>
+                                    <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                    </Row>
+                                    <Row size={20}>
+                                        <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Card>
+                ))
+                 : null}
+                { items.afternoon.length > 0 ? <Text style={styles.tourHeader}>15:00</Text> : null}
+                { items.afternoon.length > 0 ? [items.afternoon[0]].map(item =>
+                (
+                    <Card style={styles.dateCard} onPress={() => onClickItem(item)}>
+                        <Grid style={{ flex: 0, height: 150 }}>
+                            <Row>
+                                <Col size={40}>
+                                    <Image
+                                        style={styles.tinyLogo}
+                                        source={{
+                                            uri: item.img,
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={60}>
+                                    <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                    </Row>
+                                    <Row size={20}>
+                                        <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Card>
+                ))
+                 : null}
+                { items.dinner.length > 0 ? <Text style={styles.tourHeader}>19:00</Text> : null}
+                { items.dinner.length > 0 ? [items.dinner[0]].map(item =>
+                (
+                    <Card style={styles.dateCard} onPress={() => onClickItem(item)}>
+                        <Grid style={{ flex: 0, height: 150 }}>
+                            <Row>
+                                <Col size={40}>
+                                    <Image
+                                        style={styles.tinyLogo}
+                                        source={{
+                                            uri: item.img,
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={60}>
+                                    <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                    </Row>
+                                    <Row size={20}>
+                                        <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Card>
+                ))
+                 : null}
+                { items.night.length > 0 ? <Text style={styles.tourHeader}>21:00</Text> : null}
+                { items.night.length > 0 ? [items.night[0]].map(item =>
+                (
+                    <Card style={styles.dateCard} onPress={() => onClickItem(item)}>
+                        <Grid style={{ flex: 0, height: 150 }}>
+                            <Row>
+                                <Col size={40}>
+                                    <Image
+                                        style={styles.tinyLogo}
+                                        source={{
+                                            uri: item.img,
+                                        }}
+                                    />
+                                </Col>
+                                <Col size={60}>
+                                    <Row size={60}><Text style={styles.tourCardTextTitle}>{item.name}</Text>
+                                        <Button style={{...styles.likeBanner, marginRight: -50}} accessoryLeft={heartIcon}></Button>
+                                    </Row>
+                                    <Row size={20}>
+                                        <Text style={styles.tourCardText}>Durata: {item.durata} ora</Text>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Card>
+                ))
+                 : null}
             </ScrollView>
         </>
     )
@@ -514,8 +671,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     tinyLogo: {
-        width: 100,
-        height: 100,
+        width: 130,
+        height: 130,
+        borderRadius: 10,
         marginTop: "auto",
         marginBottom: "auto",
     },
@@ -548,7 +706,7 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255.0, 255.0, 255.0, 0.05)",
         borderRadius: 10,
         margin: 10,
-        marginTop: 2,
+        marginTop: 2
     },
     toggle: {
         marginTop: "auto",
@@ -559,40 +717,41 @@ const styles = StyleSheet.create({
     },
     container: {
         marginTop: "0%",
-        marginBottom:"2%"
-      },
-    textBanner:{
-        fontSize:18,
-        padding:10,
-        marginTop:10
-        
+        marginBottom: "2%"
     },
-    carouselHeader:{
-        fontSize:20,
-        margin:"5%",
-        marginBottom:"2%"
+    textBanner: {
+        fontSize: 18,
+        padding: 10,
+        marginTop: 10
+
     },
-    buttonBanner:{
-        width:20,
-        height:20,
-        position:"absolute",
-        right:0,
-        borderRadius:50,
-        margin:10,
-        backgroundColor:"#17de14"
+    carouselHeader: {
+        fontSize: 20,
+        margin: "5%",
+        marginBottom: "2%"
     },
-    likeBanner:{
-        width:20,
-        height:20,
-        backgroundColor:"#ff244c",
-        position:"absolute",
-        right:50,
-        borderRadius:50,
-        margin:10
+    buttonBanner: {
+        width: 20,
+        height: 20,
+        position: "absolute",
+        right: 0,
+        borderRadius: 50,
+        margin: 10,
+        backgroundColor: "#17de14"
+    },
+    likeBanner: {
+        width: 20,
+        height: 20,
+        backgroundColor: "#ff244c",
+        position: "absolute",
+        right: 50,
+        borderRadius: 50,
+        margin: 10
     },
     tourCardText: {
         marginRight: "auto",
-        fontSize: 12
+        fontSize: 12,
+        marginTop: -10,
     },
     tourCardTextTitle: {
         fontSize: 15,
@@ -606,7 +765,54 @@ const styles = StyleSheet.create({
         margin: 10,
         backgroundColor: "white",
         marginLeft: "auto",
-        marginRight:"auto"
+        marginRight: "auto"
+    },
+    tourHeader: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        fontSize: 20,
+        margin: 10
+    },
+    bigLogo: {
+        width: 250,
+        height: 250,
+        borderRadius: 20,
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 30
+    },
+    info: {
+        fontSize: 17,
+        marginTop: 20,
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    infoTime: {
+        fontSize: 20,
+        marginTop: 5,
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    timeCard: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "80%",
+        borderRadius: 10,
+        marginTop: 20
+    },
+    callButton: {
+        width: "80%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderRadius: 100,
+        marginTop: 20
+    },
+    buttonLocation: {
+        width: "80%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderRadius: 100,
+        marginTop: 20
     }
 });
 

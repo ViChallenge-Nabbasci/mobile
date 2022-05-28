@@ -31,3 +31,7 @@ export const ArrowBackIcon = (props) => (
 export const CheckmarkIcon = (props) => (
     <Icon {...props} name='checkmark-outline' />
 )
+
+export const PhoneIcon = (props) => (
+    <Icon {...props} name='phone-outline' />
+)

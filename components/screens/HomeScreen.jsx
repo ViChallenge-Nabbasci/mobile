@@ -8,16 +8,56 @@ import { Row, Col, Grid } from "react-native-easy-grid";
 
 import { useState } from 'react';
 
-export const HomeScreen = () => {
-    const [tourPlannerToggled, setToggled] = useState(false);
+import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 
+const Stack = createStackNavigator();
+
+export const HomeStackNavigator = () => {
+    return (
+        <Stack.Navigator screenOptions={{
+                headerShown: false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+            }}>
+            <Stack.Screen name="HomeScreen" component={HomeScreen}
+                options={{
+                    transitionSpec: {
+                        open: config,
+                        close: config,
+                    },
+                }}>
+            </Stack.Screen>
+            <Stack.Screen name="TourPlanner" component={TourPlanner}
+                options={{
+                    transitionSpec: {
+                        open: config,
+                        close: config,
+                    },
+                }}>
+            </Stack.Screen>
+        </Stack.Navigator>
+    )
+}
+
+const config = {
+    animation: 'spring',
+    config: {
+        stiffness: 1000,
+        damping: 500,
+        mass: 2,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+    },
+};
+
+export const HomeScreen = (props) => {
     const openTourPlanner = () => {
-        setToggled(tourPlanned => tourPlanned = !tourPlanned);
+        props.navigation.navigate("TourPlanner");
+        props.navigation.pop
     }
 
     return (
         <Layout style={styles.layout}>
-            {tourPlannerToggled === false ?
                 <Button style={styles.searchButton}
                     accessoryLeft={SearchIcon}
                     size="giant"
@@ -27,14 +67,11 @@ export const HomeScreen = () => {
                         Cerca itinerario
                     </Text>
                 </Button>
-                :
-                <TourPlanner toggler={openTourPlanner} />
-            }
         </Layout>
     )
 }
 
-const TourPlanner = (props) => {
+export const TourPlanner = (props) => {
     const [byCarState, setByCar] = useState(false);
     const [dateState, setDate] = useState(new Date());
     const [outForLunchState, setOutForLunch] = useState(false);
@@ -51,146 +88,162 @@ const TourPlanner = (props) => {
     });
 
     return (
-        <ScrollView>
-            <Text
-                style={styles.input}>
-                Cosa vuoi fare?
-            </Text>
-            <Card style={styles.dateCard}>
-                <Grid style={{ flex: 0, height: 50 }}>
-                    <Row>
-                        <Col>
-                            <Text style={styles.dateCardText}>Data</Text>
-                        </Col>
-                        <Col>
-                            <Datepicker
-                                accessoryLeft={DateIcon}
-                                placeholder=""
-                                date={dateState}
-                                onSelect={nextDate => setDate(nextDate)}
-                                size="large"
-                                style={styles.datepicker}
-                            />
-                        </Col></Row>
-                </Grid>
-            </Card>
-            <Card style={styles.dateCard}>
-                <Grid style={{ flex: 0, height: 50 }}>
-                    <Row>
-                        <Col>
-                            <Text style={styles.dateCardText}>Hai un'automobile?</Text>
-                        </Col>
-                        <Col>
-                            <Toggle style={styles.toggle} checked={byCarState} onChange={(checked) => setByCar(checked)}></Toggle>
-                        </Col>
-                    </Row>
-                </Grid>
-            </Card>
-            <Card style={styles.dateCard}>
-                <Grid style={{ flex: 0, height: 100 }}>
-                    <Row>
-                        <Col>
-                            <Text style={styles.dateCardText}>Pranzi fuori?</Text>
-                        </Col>
-                        <Col>
-                            <Toggle style={styles.toggle} checked={outForLunchState} onChange={(checked) => setOutForLunch(checked)}></Toggle>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Text style={styles.dateCardText}>Ceni fuori?</Text>
-                        </Col>
-                        <Col>
-                            <Toggle style={styles.toggle} checked={outForDinnerState} onChange={(checked) => setOutForDinner(checked)}></Toggle>
-                        </Col>
-                    </Row>
-                </Grid>
-            </Card>
-            <Card style={styles.dateCard}>
-                <Grid style={{ flex: 0, height: 50 }}>
-                    <Row>
-                        <Col>
-                            <Text style={styles.dateCardText}>Hai un cane?</Text>
-                        </Col>
-                        <Col>
-                            <Toggle style={styles.toggle} checked={hasDogState} onChange={(checked) => setHasDog(checked)}></Toggle>
-                        </Col>
-                    </Row>
-                </Grid>
-            </Card>
-            <Card style={styles.dateCard}>
-                <Grid style={{ flex: 0, height: 50 }}>
-                    <Row>
-                        <Col>
-                            <Text style={styles.dateCardText}>Preferiresti solo luoghi gratuiti?</Text>
-                        </Col>
-                        <Col>
-                            <Toggle style={styles.toggle} checked={freePlacesOnlyState} onChange={(checked) => setFreePlacesOnly(checked)}></Toggle>
-                        </Col>
-                    </Row>
-                </Grid>
-            </Card>
-            <Card style={styles.dateCard}>
-                <Grid style={{ flex: 0, height: 300 }}>
-                    <Row>
-                        <Text style={styles.dateCardText}>Preferiresti solo luoghi gratuiti?</Text>
-                    </Row>
-                    <Row>
-                        <CheckBox
-                            checked={interestsState.parks}
-                            onChange={(b) => setInterests({ ...interestsState, parks: b })}>
+        <Layout>
+            <ScrollView>
+                <Text
+                    style={styles.input}>
+                    Cosa vuoi fare?
+                </Text>
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 50 }}>
+                        <Row>
+                            <Col>
+                                <Text style={styles.dateCardText}>Data</Text>
+                            </Col>
+                            <Col>
+                                <Datepicker
+                                    accessoryLeft={DateIcon}
+                                    placeholder=""
+                                    date={dateState}
+                                    onSelect={nextDate => setDate(nextDate)}
+                                    size="large"
+                                    style={styles.datepicker}
+                                />
+                            </Col></Row>
+                    </Grid>
+                </Card>
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 50 }}>
+                        <Row>
+                            <Col>
+                                <Text style={styles.dateCardText}>Hai un'automobile?</Text>
+                            </Col>
+                            <Col>
+                                <Toggle style={styles.toggle} checked={byCarState} onChange={(checked) => setByCar(checked)}></Toggle>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </Card>
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 100 }}>
+                        <Row>
+                            <Col>
+                                <Text style={styles.dateCardText}>Pranzi fuori?</Text>
+                            </Col>
+                            <Col>
+                                <Toggle style={styles.toggle} checked={outForLunchState} onChange={(checked) => setOutForLunch(checked)}></Toggle>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Text style={styles.dateCardText}>Ceni fuori?</Text>
+                            </Col>
+                            <Col>
+                                <Toggle style={styles.toggle} checked={outForDinnerState} onChange={(checked) => setOutForDinner(checked)}></Toggle>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </Card>
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 50 }}>
+                        <Row>
+                            <Col>
+                                <Text style={styles.dateCardText}>Hai un cane?</Text>
+                            </Col>
+                            <Col>
+                                <Toggle style={styles.toggle} checked={hasDogState} onChange={(checked) => setHasDog(checked)}></Toggle>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </Card>
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 50 }}>
+                        <Row>
+                            <Col>
+                                <Text style={styles.dateCardText}>Preferiresti solo luoghi gratuiti?</Text>
+                            </Col>
+                            <Col>
+                                <Toggle style={styles.toggle} checked={freePlacesOnlyState} onChange={(checked) => setFreePlacesOnly(checked)}></Toggle>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </Card>
+                <Card style={styles.dateCard}>
+                    <Grid style={{ flex: 0, height: 300 }}>
+                        <Row>
+                            <Text style={styles.dateCardText}>Dove preferiresti andare?</Text>
+                        </Row>
+                        <Row>
+                            <CheckBox
+                                checked={interestsState.parks}
+                                onChange={(b) => setInterests({ ...interestsState, parks: b })}>
                                 Parchi
-                        </CheckBox>
-                    </Row>
-                    <Row>
-                        <CheckBox
-                            checked={interestsState.squares}
-                            onChange={(b) => setInterests({ ...interestsState, squares: b })}>
+                            </CheckBox>
+                        </Row>
+                        <Row>
+                            <CheckBox
+                                checked={interestsState.squares}
+                                onChange={(b) => setInterests({ ...interestsState, squares: b })}>
                                 Piazze
-                        </CheckBox>
-                    </Row>
-                    <Row>
-                        <CheckBox
-                            checked={interestsState.trekking}
-                            onChange={(b) => setInterests({ ...interestsState, trekking: b })}>
+                            </CheckBox>
+                        </Row>
+                        <Row>
+                            <CheckBox
+                                checked={interestsState.trekking}
+                                onChange={(b) => setInterests({ ...interestsState, trekking: b })}>
                                 Camminate o trekking
-                        </CheckBox>
-                    </Row>
-                    <Row>
-                        <CheckBox
-                            checked={interestsState.teathers}
-                            onChange={(b) => setInterests({ ...interestsState, teathers: b })}>
+                            </CheckBox>
+                        </Row>
+                        <Row>
+                            <CheckBox
+                                checked={interestsState.teathers}
+                                onChange={(b) => setInterests({ ...interestsState, teathers: b })}>
                                 Teatri
-                        </CheckBox>
-                    </Row>
-                    <Row>
-                        <CheckBox
-                            checked={interestsState.museums}
-                            onChange={(b) => setInterests({ ...interestsState, museums: b })}>
+                            </CheckBox>
+                        </Row>
+                        <Row>
+                            <CheckBox
+                                checked={interestsState.museums}
+                                onChange={(b) => setInterests({ ...interestsState, museums: b })}>
                                 Musei
-                        </CheckBox>
-                    </Row>
-                    <Row>
-                        <CheckBox
-                            checked={interestsState.churches}
-                            onChange={(b) => setInterests({ ...interestsState, churches: b })}>
+                            </CheckBox>
+                        </Row>
+                        <Row>
+                            <CheckBox
+                                checked={interestsState.churches}
+                                onChange={(b) => setInterests({ ...interestsState, churches: b })}>
                                 Chiese
-                        </CheckBox>
-                    </Row>
-                </Grid>
-            </Card>
-            <Layout>
-                <Grid style={{ flex: 0, height: 90 }}>
-                    <Row>
-                        <Col>
-                            <Button style={styles.endButton} size="large" status="danger" accessoryLeft={ArrowBackIcon}>Indietro</Button>
-                        </Col>
-                        <Col>
-                            <Button style={styles.endButton} size="large" status="success" accessoryRight={CheckmarkIcon}>Conferma</Button>
-                        </Col></Row>
-                </Grid>
-            </Layout>
-        </ScrollView>
+                            </CheckBox>
+                        </Row>
+                    </Grid>
+                </Card>
+                <Layout>
+                    <Grid style={{ flex: 0, height: 90 }}>
+                        <Row>
+                            <Col>
+                                <Button style={styles.endButton}
+                                    size="large"
+                                    status="danger"
+                                    accessoryLeft={ArrowBackIcon}
+                                    onPress={() => props.navigation.goBack()}
+                                >
+                                    Indietro
+                                </Button>
+                            </Col>
+                            <Col>
+                                <Button style={styles.endButton}
+                                    size="large"
+                                    status="success"
+                                    accessoryRight={CheckmarkIcon}>
+                                    Conferma
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </Layout>
+            </ScrollView>
+
+        </Layout>
     );
 }
 

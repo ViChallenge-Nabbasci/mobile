@@ -36,7 +36,12 @@
     "react-native-tabs": "^1.0.9",
     "react-native-web": "0.17.7",
     "react-navigation": "^4.4.4",
+<<<<<<< HEAD
     "react-native-gesture-handler": "~2.2.1"
+=======
+    "webpack-dev-server": "~3.11.0",
+    "@expo/webpack-config": "~0.16.2"
+>>>>>>> 5ea32437bc16cd4634eb36d361878a743798c34c
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

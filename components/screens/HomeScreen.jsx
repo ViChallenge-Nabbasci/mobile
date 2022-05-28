@@ -1,8 +1,8 @@
 import { Card, Layout, Text, Toggle } from '@ui-kitten/components';
-import { Button, Datepicker, CheckBox } from '@ui-kitten/components';
+import { Button, Datepicker, CheckBox, Icon } from '@ui-kitten/components';
 import { DateIcon, SearchIcon, ArrowBackIcon, CheckmarkIcon } from "../icons";
 
-import { ScrollView, SafeAreaView, View } from 'react-native';
+import { ScrollView, SafeAreaView, View,Linking } from 'react-native';
 
 import { Row, Col, Grid } from "react-native-easy-grid";
 
@@ -54,6 +54,14 @@ const config = {
     },
 };
 
+const pinIcon=(props)=>(
+    <Icon name="pin-outline" {...props} />
+  )
+const heartIcon=(props)=>(
+<Icon name="heart-outline" {...props} />
+)
+
+
 export const HomeScreen = (props) => {
     const openTourPlanner = () => {
         props.navigation.navigate("TourPlanner");
@@ -86,21 +94,28 @@ export const HomeScreen = (props) => {
                     data={[{
                         title: 'Giardino Salvi',
                         source: require('../../assets/giardinoSalvi.jpg'),
+                        map:"https://goo.gl/maps/dPty1noXK4hpU7iE8"
                         },
                         {
                         title: 'Contrà Mure Porta Nova',
                         source: require('../../assets/portaNuova.jpg'),
+                        map:"https://goo.gl/maps/8MjqDw8FuWQahk1B9"
                         },
                         {
                         title: 'Santuario di Santa Corona',
                         source: require('../../assets/santaCorona.jpg'),
+                        map:"https://goo.gl/maps/4iGdcnPNgepZWm1U9"
                         }
                     ]} 
                     renderItem={(props, i, width) => {
                         return (
                             <>
                                 <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <Text style={styles.textBanner}>{props.title}</Text>
+                                <View>
+                                    <Text style={styles.textBanner}>{props.title}</Text>
+                                    <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={()=>{Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err))}}></Button>
+                                    <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                                </View>
                             </>
                         )
                     }} 
@@ -120,21 +135,28 @@ export const HomeScreen = (props) => {
                     data={[{
                         title: 'Villa la Rotonda',
                         source: require('../../assets/villaRondo.jpg'),
+                        map:"https://g.page/villa-la-rotonda-vicenza?share"
                         },
                         {
                         title: 'Basilica Palladiana',
                         source: require('../../assets/basilicaPalladiana.jpg'),
+                        map:"https://goo.gl/maps/Cduzd2eVEDGXFz9y9"
                         },
                         {
                         title: 'Castello Inferiore a Marostica',
                         source: require('../../assets/castelloMarostica.jpg'),
+                        map:"https://goo.gl/maps/NGYjkbNMmhCLCBAe9"
                         }
                     ]} 
                     renderItem={(props, i, width) => {
                         return (
                             <>
                                 <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <Text style={styles.textBanner}>{props.title}</Text>
+                                <View>
+                                    <Text style={styles.textBanner}>{props.title}</Text>
+                                    <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={()=>{Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err))}}></Button>
+                                    <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                                </View>
                             </>
                         )
                     }} 
@@ -154,21 +176,28 @@ export const HomeScreen = (props) => {
                     data={[{
                         title: 'Ristorante Da Biasio',
                         source: require('../../assets/ristoranteBlasio.jpg'),
+                        map: "https://www.google.com/maps/place/Ristorante+Da+Biasio/@45.5197587,11.5465239,15z/data=!4m5!3m4!1s0x0:0xb2e00ce5025588c5!8m2!3d45.5197572!4d11.5465343"
                         },
                         {
                         title: 'Ristorante "Il Ceppo"',
                         source: require('../../assets/ristoCeppo.jpg'),
+                        map: "https://goo.gl/maps/SjW2SNKzNBqBAa5d8"
                         },
                         {
                         title: 'al Pastello',
                         source: require('../../assets/ristoPastello.jpg'),
+                        map: "https://g.page/alpestello?share"
                         }
                     ]} 
                     renderItem={(props, i, width) => {
                         return (
                             <>
                                 <Banner id={`${props.title}_${i}`} source={props.source} width={width}  onPress={(id) => null} />
-                                <Text style={styles.textBanner}>{props.title}</Text>
+                                <View>
+                                    <Text style={styles.textBanner}>{props.title}</Text>
+                                    <Button style={styles.buttonBanner} accessoryLeft={pinIcon} onPress={()=>{Linking.openURL(props.map).catch(err => console.error("Couldn't load page", err))}}></Button>
+                                    <Button style={styles.likeBanner} accessoryLeft={heartIcon}></Button>
+                                </View>
                             </>
                         )
                     }} 
@@ -402,13 +431,33 @@ const styles = {
         marginBottom:"2%"
       },
     textBanner:{
-        fontSize:16,
-        padding:10
+        fontSize:18,
+        padding:10,
+        marginTop:10
         
     },
     carouselHeader:{
         fontSize:20,
-        margin:"5%"
+        margin:"5%",
+        marginBottom:"2%"
+    },
+    buttonBanner:{
+        width:20,
+        height:20,
+        position:"absolute",
+        right:0,
+        borderRadius:50,
+        margin:10,
+        backgroundColor:"#17de14"
+    },
+    likeBanner:{
+        width:20,
+        height:20,
+        backgroundColor:"#ff244c",
+        position:"absolute",
+        right:50,
+        borderRadius:50,
+        margin:10
     }
 };
 
